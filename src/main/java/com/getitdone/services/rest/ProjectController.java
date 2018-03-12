@@ -39,7 +39,8 @@ public class ProjectController {
         try {
             project.setCreatedBy(userId);
             String id = service.createProject(project);
-            return id;
+            response.setStatus(201);
+            return "Location: /projects/"+id;
 
         } catch (JSONException e){
             response.setStatus(404);
@@ -47,14 +48,13 @@ public class ProjectController {
         }
     }
 
-
     /**
      * GET: url: /projects/{id}
      * return Project json
      * @param id
      * @return
      */
-    @RequestMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method= RequestMethod.GET, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Project getProject(@PathVariable String id) {
         logger.info("getProject API id: {}", id);
         Project project =  service.getProject(id);

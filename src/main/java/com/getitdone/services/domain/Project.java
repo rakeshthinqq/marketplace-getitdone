@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Project {
@@ -13,8 +15,16 @@ public class Project {
 
     private String name;
     private String description;
-    private BigDecimal cost;
+    private BigDecimal listingPrice;
     private String createdBy;
+    private List<Bid> bids;
+
+    private BigDecimal lowestBidPrice;
+
+
+
+
+
 
     private Date lastDate;
     private String status = STATUS.OPEN.name();
@@ -27,6 +37,13 @@ public class Project {
         this.name = name;
         this.description = description;
         this.createdBy = createdBy;
+    }
+
+    public void addBid(Bid bid) {
+        if(bids == null) {
+            bids = new ArrayList<>();
+        }
+        bids.add(bid);
     }
 
     public enum STATUS {
@@ -56,12 +73,12 @@ public class Project {
         this.lastDate = lastDate;
     }
 
-    public BigDecimal getCost() {
-        return cost;
+    public BigDecimal getListingPrice() {
+        return listingPrice;
     }
 
-    public void setCost(BigDecimal cost) {
-        this.cost = cost;
+    public void setListingPrice(BigDecimal listingPrice) {
+        this.listingPrice = listingPrice;
     }
 
     public String getCreatedBy() {
@@ -82,5 +99,9 @@ public class Project {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<Bid> getBids() {
+        return bids;
     }
 }

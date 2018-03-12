@@ -36,7 +36,7 @@ public class UserController {
         try {
             String id = service.createUser(user);
             response.setStatus(201);
-            return "Location: /users"+id;
+            return "Location: /users/"+id;
         } catch (JSONException e){
             response.setStatus(404);
             return "Not valid JSON";

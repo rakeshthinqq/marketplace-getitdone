@@ -5,6 +5,10 @@ curl -v -H "Content-Type: application/json" -X POST -d '{"firstName":"Den","last
 curl -v -H "Content-Type: application/json" -H "userId: 5aa5b2fb1e34f3136e13f067"  -d '{"name":"Log creation","description":"I need a log for my blog","createdBy":"12345"}' -X POST http://localhost:8080/getitdone/projects;
 curl -v -H "Content-Type: application/json" -H "userId: 5aa5b2fb1e34f3136e13f067"  -d '{"status":"closed","name":"new slenium automation","description":"test my blog","createdBy":"12345"}' -X POST http://localhost:8080/getitdone/projects;
 curl -v -H "Content-Type: application/json" -H "userId: 5aa5b2fb1e34f3136e13f067"  -d '{"status":"open","name":"I need a ecommerce app","description":"need to help to create catalog in shopify","createdBy":"12345"}' -X POST http://localhost:8080/getitdone/projects;
-curl -v -H "Content-Type: application/json" -H "userId: 5aa5b2fb1e34f3136e13f067"  -d '{"bidPrice":100}' -X POST http://localhost:8080/getitdone/projects/5aa5b3361e34f3136e13f06a/bids;
+curl -v -H "Content-Type: application/json" -H "userId: 5aa5c9db6e700f177a3483f9"  -d '{"bidPrice":100}' -X POST http://localhost:8080/getitdone/projects/5aa5d0336e700f188151cfa6/bids;
+curl -v -H "Content-Type: application/json" -H "userId: 5aa5c9db6e700f177a3483f9"  -d '{"bidPrice":40}' -X POST http://localhost:8080/getitdone/projects/5aa5d0336e700f188151cfa6/bids;
+curl -v -H "Content-Type: application/json" -H "userId: 5aa5c9db6e700f177a3483f9"  -d '{"bidPrice":30}' -X POST http://localhost:8080/getitdone/projects/5aa5d0336e700f188151cfa6/bids;
+
+
 
 
