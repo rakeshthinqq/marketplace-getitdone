@@ -58,5 +58,12 @@ Get All bids of project:
     > do more validation on input
     > do mmore error code mapping
     > Authentication
+    
+Note    
 
+    The time the exercise took (after dev environment is set up)        - 7-8 hours
+    Exercise Difficulty: Easy, Moderate, Difficult, Very Difficult  -  Moderate
+    How did you feel about the exercise itself? (1 lowest, 10 highest—awesome way to assess coding ability) - 8
+    How do you feel about coding an exercise as a step in the interview process?  (1 lowest, 10 highest—awesome way to assess coding ability) - 10
+    What would you change in the exercise and/or process? > It would be nice if we know in-sope and out of scope  use cases in advance
 
