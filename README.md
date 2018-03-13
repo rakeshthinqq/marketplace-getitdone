@@ -32,13 +32,13 @@ Create Project:
     
 Get Project by Id
 
-    curl http://localhost:8080/getitdone/projects/5aa8449a9465b61de5aef402
+    curl http://localhost:8080/getitdone/projects/{5aa8449a9465b61de5aef402}
 
 Bid for a Project
 
     curl -v -H "Content-Type: application/json" -H "userId: 5aa5c9db6e700f177a3483f9"  \
         -d '{"bidPrice":15.5, "comment": "I am interested to take this up"}'
-        -X POST http://localhost:8080/getitdone/projects/5aa8449a9465b61de5aef402/bids
+        -X POST http://localhost:8080/getitdone/projects/{5aa8449a9465b61de5aef402}/bids
 
 Get All open projects
 
@@ -46,7 +46,7 @@ Get All open projects
     
 Get All bids of project:
 
-    curl http://localhost:8080/getitdone/projects/5aa8449a9465b61de5aef402/bids
+    curl http://localhost:8080/getitdone/projects/{5aa8449a9465b61de5aef402}/bids
 
 
 **TODO**
