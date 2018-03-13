@@ -1,5 +1,7 @@
 Spring boot - embedded mongo, Rest app
+
 **Swagger**
+
 http://localhost:8080/getitdone/swagger-ui.html
 
 **set up**
