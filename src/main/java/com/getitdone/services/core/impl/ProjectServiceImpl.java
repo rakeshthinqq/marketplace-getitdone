@@ -6,9 +6,11 @@ import com.getitdone.services.domain.Bid;
 import com.getitdone.services.domain.Project;
 import com.getitdone.services.repo.ProjectRepository;
 import com.getitdone.services.util.GetitDonAppException;
+import com.getitdone.services.util.ServiceHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -26,6 +28,9 @@ public class ProjectServiceImpl implements IProjectService {
 
     @Autowired
     ProjectRepository repository;
+
+    @Autowired
+    ServiceHelper serviceHelper;
 
     @Override
     public String createProject(Project project) {
@@ -45,22 +50,11 @@ public class ProjectServiceImpl implements IProjectService {
             p =  project.get();
             setLowestBid(p);
             addLink(Arrays.asList(p));
-            doStatusChange(p);
+            serviceHelper.doStatusChange(p);
         }
         return p;
     }
 
-    private void doStatusChange(Project p) {
-        try {
-            if (p.getListingExpiryDate() != null && new Date().after(p.getListingExpiryDate())) {
-                p.setStatus(Project.STATUS.CLOSED.name());
-            }
-        } catch (Exception e){
-            logger.error("Error changing status: {}", (p!= null ? p.getId() : ""), e);
-            throw new GetitDonAppException("code-statusChange", e.toString());
-        }
-
-    }
 
     private void setLowestBid(Project p) {
         try {
@@ -85,10 +79,16 @@ public class ProjectServiceImpl implements IProjectService {
         if(!CollectionUtils.isEmpty(projectList)){
             for(Project p : projectList) {
                 Map<String, String> link = new HashMap<>();
-                link.put("href", "/"+p.getId()+"/"+"bids");
+                link.put("href", "/projects/"+p.getId()+"/"+"bids");
                 link.put("rel", "bids");
                 link.put("type", "GET");
                 p.addLink(link);
+
+                Map<String, String> selfLink = new HashMap<>();
+                selfLink.put("href", "/projects/"+p.getId());
+                selfLink.put("rel", "self");
+                selfLink.put("type", "GET");
+                p.addLink(selfLink);
             }
         }
     }
@@ -117,31 +117,60 @@ public class ProjectServiceImpl implements IProjectService {
 
         List<Project> projects = null;
         if (filterMap.containsKey(Constants.QUERY_PARAM_STATUS) || filterMap.containsKey(Constants.QUERY_PARAM_CREATEBY)) {
-            if (filterMap.containsKey(Constants.QUERY_PARAM_STATUS) & filterMap.containsKey(Constants.QUERY_PARAM_CREATEBY)) {
-                projects = repository.findProjectByCreatedByAndStatus(
-                        filterMap.get(Constants.QUERY_PARAM_CREATEBY),
-                        filterMap.get(Constants.QUERY_PARAM_STATUS));
-
-            } else if (filterMap.containsKey(Constants.QUERY_PARAM_STATUS)) {
-                projects = repository.findProjectByStatus(filterMap.get(Constants.QUERY_PARAM_STATUS));
-            } else {
-                projects = repository.findProjectByStatus(filterMap.get(Constants.QUERY_PARAM_CREATEBY));
-            }
-
-            if (projects.size() > size) {
-                //return first based upon page number
-                projects = projects.subList(0, size);
-                //TODO: do pagination
-            }
+            projects = getProjectsByFilter(filterMap, size);
         } else {
-//        Page<Project> all = repository.findAll(PageRequest.of(page, size));
-//        if(all != null) {
-//            return all.getContent();
-//        }
+        /*        Page<Project> all = repository.findAll(PageRequest.of(page, size));
+        if(all != null) {
+            return all.getContent();
+        }*/
           projects = repository.findAll();
 
         }
         addLink(projects);
+        return projects;
+    }
+
+    @Override
+    public void updateProject(Project project) {
+        Optional<Project> one = repository.findById(project.getId());
+
+        Project exising = null;
+        if(one.isPresent()){
+            exising = one.get();
+            BeanUtils.copyProperties(project, exising);
+        }
+
+        repository.save(exising);
+    }
+
+    @Override
+    public boolean validateProject(Project project) {
+        if(project.getId() == null){
+            //TODO, add other params
+            return false;
+        }
+
+        return true;
+    }
+
+    private List<Project> getProjectsByFilter(Map<String, String> filterMap, int size) {
+        List<Project> projects;
+        if (filterMap.containsKey(Constants.QUERY_PARAM_STATUS) && filterMap.containsKey(Constants.QUERY_PARAM_CREATEBY)) {
+            projects = repository.findProjectByCreatedByAndStatus(
+                    filterMap.get(Constants.QUERY_PARAM_CREATEBY),
+                    filterMap.get(Constants.QUERY_PARAM_STATUS));
+
+        } else if (filterMap.containsKey(Constants.QUERY_PARAM_STATUS)) {
+            projects = repository.findProjectByStatus(filterMap.get(Constants.QUERY_PARAM_STATUS));
+        } else {
+            projects = repository.findProjectByStatus(filterMap.get(Constants.QUERY_PARAM_CREATEBY));
+        }
+
+        if (projects.size() > size) {
+            //return first based upon page number
+            projects = projects.subList(0, size);
+            //TODO: do pagination
+        }
         return projects;
     }
 
@@ -150,7 +179,7 @@ public class ProjectServiceImpl implements IProjectService {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy hh:mm");
 
         try {
-            Date date =  format.parse("13-03-2018 01:45");
+            Date date =  format.parse("13-03-2018 02:10");
             project.setListingExpiryDate(date);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -170,7 +199,7 @@ public class ProjectServiceImpl implements IProjectService {
         Bid bid2 = new Bid();
         bid2.setBidPrice(new BigDecimal(30));
         project.addBid(bid2);
-        new ProjectServiceImpl().doStatusChange(project);
+        new ServiceHelper().doStatusChange(project);
         System.out.println(project);
     }
 

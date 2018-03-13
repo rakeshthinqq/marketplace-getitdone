@@ -3,6 +3,7 @@ package com.getitdone.services.rest;
 import com.getitdone.services.core.IBidService;
 import com.getitdone.services.domain.Bid;
 import com.getitdone.services.domain.Project;
+import com.wordnik.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Api(tags = {"/projects/{projectId}/bids"})
 @RestController
 public class BidController {
 

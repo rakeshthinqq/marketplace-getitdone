@@ -15,6 +15,8 @@ public class Bid {
 
     private String createdBy;
 
+    private String comment;
+
 
     public BigDecimal getBidPrice() {
         return bidPrice;
@@ -34,5 +36,23 @@ public class Bid {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    @Override
+    public String toString() {
+        return "Bid{" +
+                "id='" + id + '\'' +
+                ", bidPrice=" + bidPrice +
+                ", createdBy='" + createdBy + '\'' +
+                ", comment='" + comment + '\'' +
+                '}';
     }
 }

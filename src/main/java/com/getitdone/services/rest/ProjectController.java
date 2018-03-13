@@ -5,6 +5,7 @@ import com.getitdone.services.core.IProjectService;
 import com.getitdone.services.domain.Project;
 import com.getitdone.services.util.GetitDonAppException;
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -55,13 +56,13 @@ public class ProjectController {
     /**
      * GET: url: /projects/{id}
      * return Project json
-     * @param id
+     * @param projectId
      * @return
      */
-    @RequestMapping(method= RequestMethod.GET, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Project getProject(@PathVariable String id) {
-        logger.info("API- getProject - projec: {}", id);
-        Project project =  service.getProject(id);
+    @RequestMapping(method= RequestMethod.GET, value = "/{projectId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Project getProject(@PathVariable String projectId) {
+        logger.info("API- getProject - projectId: {}", projectId);
+        Project project =  service.getProject(projectId);
         if(project == null) {
             throw new GetitDonAppException(HttpStatus.NOT_FOUND,"project_notfound", "No project found for this id");
         }
@@ -134,11 +135,15 @@ public class ProjectController {
      * @param response
      * @return
      */
-    @RequestMapping(method= RequestMethod.PUT, value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void updateProject(@RequestBody Project project, HttpServletResponse response){
-        logger.info("update request with data: {}", project);
-        response.setStatus(501);
-        //TODO: implement update project
+    @RequestMapping(method= RequestMethod.PATCH, value = "/{projectId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void updateProject(@RequestBody Project project, @PathVariable String projectId, HttpServletResponse response){
+        logger.info("update request with data: {}, projectId:{}", project, projectId);
+        project.setId(projectId);
+        boolean isValid = service.validateProject(project);
+        if(!isValid){
+            throw new GetitDonAppException(HttpStatus.BAD_REQUEST, "error_Code", "Project json does not have mandatory attributes");
+        }
+        service.updateProject(project);
     }
 
     /**

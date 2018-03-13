@@ -2,6 +2,7 @@ package com.getitdone.services.rest;
 
 import com.getitdone.services.core.IUserService;
 import com.getitdone.services.domain.User;
+import com.wordnik.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+@Api(tags = {"users"})
 @RequestMapping(value = "/users")
 @RestController
 public class UserController {

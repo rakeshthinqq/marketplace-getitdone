@@ -3,13 +3,12 @@ package com.getitdone.services.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.wordnik.swagger.annotations.ApiModelProperty;
 import org.springframework.data.annotation.Id;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Project {
@@ -20,13 +19,13 @@ public class Project {
     private String description;
     private BigDecimal listingPrice;
 
-    @JsonIgnore
+    @ApiModelProperty(hidden = true)
     private String createdBy;
 
-    private List<Map<String, String>> links;
+    private Set<Map<String, String>> links;
     private BigDecimal lowestBidPrice;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date listingExpiryDate;
 
     private String status = STATUS.OPEN.name();
@@ -112,13 +111,13 @@ public class Project {
         return bids;
     }
 
-    public List<Map<String,String>> getLinks() {
+    public Set<Map<String,String>> getLinks() {
         return links;
     }
 
     public void addLink(Map<String, String> link) {
         if(links == null) {
-            links = new ArrayList<>();
+            links = new HashSet<>();
         }
         links.add(link);
     }
@@ -129,6 +128,10 @@ public class Project {
 
     public BigDecimal getLowestBidPrice() {
         return lowestBidPrice;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
