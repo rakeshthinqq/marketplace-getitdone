@@ -1,4 +1,6 @@
-Spring boot embedded mongo app
+Spring boot - embedded mongo, Rest app
+**Swagger**
+http://localhost:8080/getitdone/swagger-ui.html
 
 **set up**
 
@@ -9,4 +11,7 @@ $ mvn clean install spring-boot:run
 
 ./feed.sh
 script contains all curl POST calls to create User, project and Bid
+
+Run as Testng Test:
+ProjectBidE2E.java
 
