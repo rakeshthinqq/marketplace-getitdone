@@ -1,24 +1,21 @@
 Spring boot - embedded mongo, Rest app
 
-**Swagger**
-
-http://localhost:8080/getitdone/swagger-ui.html
-
 **set up**
 
 $ git clone git@github.com:rakeshthinqq/marketplace-getitdone.git
 $ mvn clean install spring-boot:run
+
+
+**Run feed to create more users, projects and bids**
+
+    ./feed.sh
+    script contains all curl POST calls to create User, project and Bid
 
 **Test**
 
 Run as TestNG
 
     ProjectBidE2ETest.java
-
-**create more users, project and bids**
-
-    ./feed.sh
-    script contains all curl POST calls to create User, project and Bid
 
 **API's**
 
@@ -62,6 +59,4 @@ Get All bids of project:
     > do mmore error code mapping
     > Authentication
 
-Run as Testng Test:
-ProjectBidE2E.java
 
