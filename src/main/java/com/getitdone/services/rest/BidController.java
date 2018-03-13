@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -40,6 +42,23 @@ public class BidController {
         return String.format("Location: /projects/%s/bids/%s", projectId, bidId);
     }
 
+
+    /**
+     * GET: url: /projects/{projectId}/bids/{id}
+     * return Array of bids json
+     * @return
+     */
+    @RequestMapping(method= RequestMethod.GET, value = "/projects/{projectId}/bids", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Bid> getAllBids(@PathVariable String projectId ) {
+        logger.info("API- get all bids of a projectId: {}", projectId);
+        List<Bid> allBids = bidService.getAllBids(projectId);
+        if(allBids == null) {
+            return new ArrayList<>();
+        }
+
+        return allBids;
+    }
+
     /**
      * GET: url: /projects/{projectId}/bids/{id}
      * return Bid json
@@ -53,16 +72,5 @@ public class BidController {
         return bid;
     }
 
-    /**
-     * GET: url: /projects/{projectId}/bids/{id}
-     * return Array of bids json
-     * @return
-     */
-    @RequestMapping(method= RequestMethod.GET, value = "/projects/{projectId}/bids", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Bid> getAllBids(@PathVariable String projectId ) {
-        logger.info("get all bids of a project API projectId: {}", projectId);
-        List<Bid> allBids = bidService.getAllBids(projectId);
-        return allBids;
-    }
 
 }

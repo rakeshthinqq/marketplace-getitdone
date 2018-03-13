@@ -3,11 +3,14 @@ package com.getitdone.services.rest;
 import com.getitdone.services.core.Constants;
 import com.getitdone.services.core.IProjectService;
 import com.getitdone.services.domain.Project;
+import com.getitdone.services.util.GetitDonAppException;
+import com.wordnik.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Api(tags = {"projects"})
 @RequestMapping(value = "/projects")
 @RestController
 public class ProjectController {
@@ -56,8 +60,11 @@ public class ProjectController {
      */
     @RequestMapping(method= RequestMethod.GET, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Project getProject(@PathVariable String id) {
-        logger.info("getProject API id: {}", id);
+        logger.info("API- getProject - projec: {}", id);
         Project project =  service.getProject(id);
+        if(project == null) {
+            throw new GetitDonAppException(HttpStatus.NOT_FOUND,"project_notfound", "No project found for this id");
+        }
         return project;
     }
 

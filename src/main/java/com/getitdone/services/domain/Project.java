@@ -1,5 +1,7 @@
 package com.getitdone.services.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.data.annotation.Id;
 
@@ -7,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Project {
@@ -16,18 +19,20 @@ public class Project {
     private String name;
     private String description;
     private BigDecimal listingPrice;
-    private String createdBy;
-    private List<Bid> bids;
 
+    @JsonIgnore
+    private String createdBy;
+
+    private List<Map<String, String>> links;
     private BigDecimal lowestBidPrice;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm")
+    private Date listingExpiryDate;
 
-
-
-
-
-    private Date lastDate;
     private String status = STATUS.OPEN.name();
+
+    @JsonIgnore
+    private List<Bid> bids;
 
     public Project() {
         this.createdBy = "system";
@@ -47,8 +52,10 @@ public class Project {
     }
 
     public enum STATUS {
-        OPEN, INPROGRESS, CLOSED;
+        OPEN, CLOSED, INPROGRESS, COMPLETED;
     }
+
+
     public String getName() {
         return name;
     }
@@ -65,12 +72,12 @@ public class Project {
         this.description = description;
     }
 
-    public Date getLastDate() {
-        return lastDate;
+    public Date getListingExpiryDate() {
+        return listingExpiryDate;
     }
 
-    public void setLastDate(Date lastDate) {
-        this.lastDate = lastDate;
+    public void setListingExpiryDate(Date listingExpiryDate) {
+        this.listingExpiryDate = listingExpiryDate;
     }
 
     public BigDecimal getListingPrice() {
@@ -103,5 +110,40 @@ public class Project {
 
     public List<Bid> getBids() {
         return bids;
+    }
+
+    public List<Map<String,String>> getLinks() {
+        return links;
+    }
+
+    public void addLink(Map<String, String> link) {
+        if(links == null) {
+            links = new ArrayList<>();
+        }
+        links.add(link);
+    }
+
+    public void setLowestBidPrice(BigDecimal lowestBidPrice) {
+        this.lowestBidPrice = lowestBidPrice;
+    }
+
+    public BigDecimal getLowestBidPrice() {
+        return lowestBidPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", listingPrice=" + listingPrice +
+                ", createdBy='" + createdBy + '\'' +
+                ", links=" + links +
+                ", bids=" + bids +
+                ", lowestBidPrice=" + lowestBidPrice +
+                ", listingExpiryDate=" + listingExpiryDate +
+                ", status='" + status + '\'' +
+                '}';
     }
 }
