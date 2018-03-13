@@ -1,4 +1,8 @@
-Spring boot embedded mongo app
+Spring boot - embedded mongo, Rest app
+
+**Swagger**
+
+http://localhost:8080/getitdone/swagger-ui.html
 
 **set up**
 
@@ -57,4 +61,7 @@ Get All bids of project:
     > do more validation on input
     > do mmore error code mapping
     > Authentication
+
+Run as Testng Test:
+ProjectBidE2E.java
 
