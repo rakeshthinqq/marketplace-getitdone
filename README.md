@@ -2,8 +2,8 @@ Spring boot - embedded mongo, Rest app
 
 **set up**
 
-$ git clone git@github.com:rakeshthinqq/marketplace-getitdone.git
-$ mvn clean install spring-boot:run
+    $ git clone git@github.com:rakeshthinqq/marketplace-getitdone.git
+    $ mvn clean install spring-boot:run
 
 
 **Run feed to create more users, projects and bids**
