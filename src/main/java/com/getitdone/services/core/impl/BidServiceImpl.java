@@ -1,6 +1,7 @@
 package com.getitdone.services.core.impl;
 
 import com.getitdone.services.core.IBidService;
+import com.getitdone.services.core.IProjectService;
 import com.getitdone.services.domain.Bid;
 import com.getitdone.services.domain.Project;
 import com.getitdone.services.repo.BidRepository;
@@ -21,6 +22,9 @@ public class BidServiceImpl implements IBidService {
     @Autowired
     ProjectRepository projectRepository;
 
+    @Autowired
+    IProjectService projectService;
+
     @Override
     public String createBid(Bid bid, String projectId) {
         Optional<Project> byId = projectRepository.findById(projectId);
@@ -30,6 +34,7 @@ public class BidServiceImpl implements IBidService {
             String objectId = new ObjectId().toString();
             bid.setId(objectId);
             project.addBid(bid);
+            projectService.setLowestBid(project);
             projectRepository.save(project);
             return objectId;
         }
@@ -51,6 +56,7 @@ public class BidServiceImpl implements IBidService {
                }
             }
         }
+
         return bid;
     }
 

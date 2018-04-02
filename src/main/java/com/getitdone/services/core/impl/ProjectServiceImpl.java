@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -48,15 +49,15 @@ public class ProjectServiceImpl implements IProjectService {
         Optional<Project> project = repository.findById(id);
         if(project.isPresent()){
             p =  project.get();
-            setLowestBid(p);
             addLink(Arrays.asList(p));
             serviceHelper.doStatusChange(p);
         }
         return p;
     }
 
-
-    private void setLowestBid(Project p) {
+    @Override
+    @Async
+    public void setLowestBid(Project p) {
         try {
             if (p != null) {
                 BigDecimal lowestAmount = new BigDecimal(-1);
@@ -134,13 +135,18 @@ public class ProjectServiceImpl implements IProjectService {
     public void updateProject(Project project) {
         Optional<Project> one = repository.findById(project.getId());
 
-        Project exising = null;
+        Project existing = null;
         if(one.isPresent()){
-            exising = one.get();
-            BeanUtils.copyProperties(project, exising);
+            existing = one.get();
+            logger.info("Existing project here >>>>>>>>>>>>>:{}", existing);
+            BeanUtils.copyProperties(project, existing, "lowestBidPrice");
+            logger.info("Source to  Copy here >>>>>>>>>>>>>:{}", project);
+
+            logger.info("Existing After Copy here >>>>>>>>>>>>>:{}", existing);
+
         }
 
-        repository.save(exising);
+        repository.save(existing);
     }
 
     @Override

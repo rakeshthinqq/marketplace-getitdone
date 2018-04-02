@@ -143,6 +143,5 @@ public class ProjectBidE2ETest extends BaseTest {
         jsonPath = RestAssured.given().log().all()
                 .get().then().statusCode(200).extract().body().jsonPath();
         Assert.assertEquals(jsonPath.get("status"), "CLOSED", "project status should be CLOSED");
-        validateLowestBid();
     }
 }
