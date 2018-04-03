@@ -3,6 +3,7 @@ package com.getitdone.services.rest;
 import com.getitdone.services.core.IBidService;
 import com.getitdone.services.domain.Bid;
 import com.getitdone.services.domain.Project;
+import com.getitdone.services.util.GetitDonAppException;
 import com.wordnik.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,13 +36,19 @@ public class BidController {
     @RequestMapping(value= "/projects/{projectId}/bids", method= RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public String createBid(@RequestBody Bid bid,@PathVariable String projectId,@RequestHeader String userId, HttpServletResponse response){
         logger.info("create bid for a project projectId: {}, bid:{}", projectId, bid);
-        if(!StringUtils.isEmpty(userId)) {
-            bid.setCreatedBy(userId);
-        }
+        try {
+            if (!StringUtils.isEmpty(userId)) {
+                bid.setCreatedBy(userId);
+            }
 
-        String bidId = bidService.createBid(bid, projectId);
-        response.setStatus(201);
-        return String.format("Location: /projects/%s/bids/%s", projectId, bidId);
+            String bidId = bidService.createBid(bid, projectId);
+            response.setStatus(201);
+
+            return String.format("Location: /projects/%s/bids/%s", projectId, bidId);
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw new GetitDonAppException("error-code", e.getMessage());
+        }
     }
 
 

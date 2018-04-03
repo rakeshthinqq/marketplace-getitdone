@@ -10,5 +10,8 @@ public class GetitdoneApp {
 
     public static void main(String[] args) {
         SpringApplication.run(GetitdoneApp.class, args);
+
+
     }
+
 }

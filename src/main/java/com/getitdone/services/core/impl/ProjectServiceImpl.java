@@ -1,6 +1,7 @@
 package com.getitdone.services.core.impl;
 
 import com.getitdone.services.core.Constants;
+import com.getitdone.services.core.IBidService;
 import com.getitdone.services.core.IProjectService;
 import com.getitdone.services.domain.Bid;
 import com.getitdone.services.domain.Project;
@@ -12,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -32,6 +32,9 @@ public class ProjectServiceImpl implements IProjectService {
 
     @Autowired
     ServiceHelper serviceHelper;
+
+    @Autowired
+    IBidService bidService;
 
     @Override
     public String createProject(Project project) {
@@ -55,24 +58,42 @@ public class ProjectServiceImpl implements IProjectService {
         return p;
     }
 
+    // 100, 200, 300 250
     @Override
-    @Async
-    public void setLowestBid(Project p) {
+    public void setLowestBid(Project p, Bid bid) {
         try {
-            if (p != null) {
-                BigDecimal lowestAmount = new BigDecimal(-1);
-                List<Bid> bids = p.getBids();
-                if (!CollectionUtils.isEmpty(bids)) {
-                    for (Bid bid : bids) {
-                        if (lowestAmount.equals(new BigDecimal(-1)) || (bid.getBidPrice() != null && bid.getBidPrice().compareTo(lowestAmount) <= 0)) {
-                            lowestAmount = bid.getBidPrice();
-                        }
-                    }
+            if (p != null && bid !=null) {
+
+                if(p.getLowestBidPrice() == null) {
+                    p.setLowestBidPrice(bid.getBidPrice());
+                    return;
                 }
-                p.setLowestBidPrice(lowestAmount);
+
+                if(bid.getBidPrice().compareTo(p.getLowestBidPrice()) <=0){
+                    p.setLowestBidPrice(bid.getBidPrice());
+                    return;
+                }
             }
         } catch (Exception e){
             throw new GetitDonAppException("code-lowestBid", e.getMessage());
+        }
+    }
+
+    @Override
+    public void triggerLowestBids(Project project, Bid currentBid) {
+        if(project.getLowestBidPrice() != null) {
+            BigDecimal triggerPrice = project.getLowestBidPrice().subtract(new BigDecimal(1));
+            List<Bid> bids = project.getBids();
+            for (Bid bid : bids) {
+                if(currentBid.getId().equals(bid.getId())){
+                    break;
+                }
+                if (bid.getCutOffBid() != null &&
+                        bid.getCutOffBid().compareTo(triggerPrice) <= 0) {
+
+                    bidService.cloneBid(project.getId(), bid, triggerPrice);
+                }
+            }
         }
     }
 

@@ -13,9 +13,11 @@ public class Bid {
 
     private BigDecimal bidPrice;
 
+    private BigDecimal cutOffBid;
+
     private String createdBy;
 
-    private String comment;
+    private String comment = "System generated";
 
 
     public BigDecimal getBidPrice() {
@@ -44,6 +46,14 @@ public class Bid {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public BigDecimal getCutOffBid() {
+        return cutOffBid;
+    }
+
+    public void setCutOffBid(BigDecimal cutOffBid) {
+        this.cutOffBid = cutOffBid;
     }
 
     @Override

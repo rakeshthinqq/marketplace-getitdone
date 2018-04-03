@@ -89,7 +89,7 @@ public class ProjectBidE2ETest extends BaseTest {
                 .content(bidsPayload.toString())
                 .contentType("application/json")
                 .header("userId", sellerId)
-                .post("/bids").then().statusCode(201).extract().body().asString();
+                .post("/bids").then().extract().body().asString();
         logger.info("Base Url: {}", bidsUrl);
 
         bidUrl = bidsUrl.replaceAll("Location:", "").trim();
@@ -144,4 +144,44 @@ public class ProjectBidE2ETest extends BaseTest {
                 .get().then().statusCode(200).extract().body().jsonPath();
         Assert.assertEquals(jsonPath.get("status"), "CLOSED", "project status should be CLOSED");
     }
+
+    @Test
+    public void setLowestBids() {
+        setBasePath(projctUrl);
+        bidsPayload.put("bidPrice", 100);
+        bidsPayload.put("cutOffBid", 50);
+        bidsPayload.put("comment", "bid1");
+
+        String bidsUrl = RestAssured.given().log().all()
+                .content(bidsPayload.toString())
+                .contentType("application/json")
+                .header("userId", sellerId)
+                .post("/bids").then().statusCode(201).extract().body().asString();
+        logger.info("Base Url: {}", bidsUrl);
+
+        bidUrl = bidsUrl.replaceAll("Location:", "").trim();
+        Assert.assertTrue(StringUtils.startsWith(bidsUrl,"Location:"), "new resource location does not exist in POST response");
+
+        //create new Bid with
+
+        bidsPayload.put("bidPrice", 90);
+        bidsPayload.put("comment", "bid2");
+
+        bidsUrl = RestAssured.given().log().all()
+                .content(bidsPayload.toString())
+                .contentType("application/json")
+                .header("userId", sellerId)
+                .post("/bids").then().statusCode(201).extract().body().asString();
+        logger.info("Base Url: {}", bidsUrl);
+
+        bidUrl = bidsUrl.replaceAll("Location:", "").trim();
+
+        setBasePath(projctUrl);
+
+        JsonPath jsonPath = RestAssured.given().log().all()
+                .get().then().statusCode(200).extract().body().jsonPath();
+
+        Assert.assertEquals(jsonPath.get("lowestBidPrice").toString(), 89, "lowestBidPrice does not match with expected");
+    }
+
 }
