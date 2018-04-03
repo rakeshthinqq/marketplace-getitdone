@@ -50,23 +50,47 @@ public class BidTest extends AbstractTestNGSpringContextTests {
         project.setName("newProject");
 
         String pid = projectService.createProject(project);
+
         Bid bid = new Bid();
         bid.setBidPrice(new BigDecimal(100));
         bid.setCutOffBid(new BigDecimal(50));
         bid.setComment("first Bid");
-        String newBId = bidService.createBid(bid, pid);
+        bidService.createBid(bid, pid);
 
         Project savedProject = projectService.getProject(pid);
-        Assert.assertEquals("100", savedProject.getLowestBidPrice().toString());
-        Assert.assertEquals(1, savedProject.getBids().size());
+        Assert.assertEquals(savedProject.getLowestBidPrice().toString(), "100");
+        Assert.assertEquals(savedProject.getBids().size(),1);
 
-        Bid newBid = new Bid();
-        newBid.setBidPrice(new BigDecimal(90));
-        newBid.setComment("2nd bid");
-        String newBidId = bidService.createBid(newBid, pid);
+        Bid bid_2 = new Bid();
+        bid_2.setBidPrice(new BigDecimal(90));
+        bid_2.setComment("2nd bid");
+        bidService.createBid(bid_2, pid);
 
         savedProject = projectService.getProject(pid);
-        Assert.assertEquals(3, savedProject.getBids().size());
-        Assert.assertEquals(89, savedProject.getLowestBidPrice());
+        Assert.assertEquals(savedProject.getBids().size(), 3);
+        Assert.assertEquals(savedProject.getLowestBidPrice().toString(),"89");
+
+
+        Bid bid_4 = new Bid();
+        bid_4.setBidPrice(new BigDecimal(95));
+        bidService.createBid(bid_4, pid);
+
+        savedProject = projectService.getProject(pid);
+        Assert.assertEquals(savedProject.getBids().size(), 4);
+
+        Bid fifthBid = new Bid();
+        fifthBid.setBidPrice(new BigDecimal(87));
+        bidService.createBid(fifthBid, pid);
+
+        savedProject = projectService.getProject(pid);
+        Assert.assertEquals( savedProject.getBids().size(), 6);
+        Assert.assertEquals(savedProject.getLowestBidPrice().toString(),"86");
+
+
+
+
+
+
+
     }
 }

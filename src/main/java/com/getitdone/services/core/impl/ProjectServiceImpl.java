@@ -81,7 +81,7 @@ public class ProjectServiceImpl implements IProjectService {
 
     @Override
     public void triggerLowestBids(Project project, Bid currentBid) {
-        if(project.getLowestBidPrice() != null) {
+        if(project.getLowestBidPrice() != null && currentBid.getBidPrice().compareTo(project.getLowestBidPrice()) <= 0 ) {
             BigDecimal triggerPrice = project.getLowestBidPrice().subtract(new BigDecimal(1));
             List<Bid> bids = project.getBids();
             for (Bid bid : bids) {
